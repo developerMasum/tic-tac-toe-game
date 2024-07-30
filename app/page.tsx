@@ -4,23 +4,46 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Square from "./components/main";
 
+interface Sounds {
+  player1Sound: HTMLAudioElement | null;
+  player2Sound: HTMLAudioElement | null;
+  winSound: HTMLAudioElement | null;
+  drawSound: HTMLAudioElement | null;
+}
+
 function Home() {
-  const [turn, setTurn] = useState(1);
-  const [winner, setWinner] = useState(0);
-  const [moves, setMoves] = useState(0);
-  const [color, setColor] = useState("#dd8e6f");
-  const [tableArray, setTableArray] = useState([
+  const [turn, setTurn] = useState<number>(1);
+  const [winner, setWinner] = useState<number>(0);
+  const [moves, setMoves] = useState<number>(0);
+  const [color, setColor] = useState<string>("#dd8e6f");
+  const [tableArray, setTableArray] = useState<number[][]>([
     [0, 0, 0],
     [0, 0, 0],
     [0, 0, 0],
   ]);
-  const [gameRunning, setGameRunning] = useState(true);
+  const [gameRunning, setGameRunning] = useState<boolean>(true);
+  const [sounds, setSounds] = useState<Sounds>({
+    player1Sound: null,
+    player2Sound: null,
+    winSound: null,
+    drawSound: null,
+  });
 
-  // Load sound effects
-  const player1Sound = new Audio("/assets/m1.wav"); // Adjust the path according to your directory structure
-  const player2Sound = new Audio("/assets/m2.wav");
-  const winSound = new Audio("/assets/win.mp3");
-  const drawSound = new Audio("/assets/over.mp3");
+  useEffect(() => {
+    const player1Sound = new Audio("/assets/m1.wav");
+    const player2Sound = new Audio("/assets/m2.wav");
+    const winSound = new Audio("/assets/win.mp3");
+    const drawSound = new Audio("/assets/over.mp3");
+
+    setSounds({ player1Sound, player2Sound, winSound, drawSound });
+
+    return () => {
+      player1Sound.pause();
+      player2Sound.pause();
+      winSound.pause();
+      drawSound.pause();
+    };
+  }, []);
 
   useEffect(() => {
     if (!gameRunning) {
@@ -29,20 +52,20 @@ function Home() {
           position: "bottom-center",
           autoClose: 3000,
         });
-        winSound.play();
+        sounds.winSound && sounds.winSound.play();
       } else {
         toast.success("The match ended in a draw", {
           position: "bottom-center",
           autoClose: 3000,
         });
-        drawSound.play();
+        sounds.drawSound && sounds.drawSound.play();
       }
 
       setTimeout(() => {
         Reset();
       }, 3000);
     }
-  }, [gameRunning, winner]);
+  }, [gameRunning, winner, sounds]);
 
   function Reset() {
     setTableArray([
@@ -57,8 +80,7 @@ function Home() {
     setColor("#de8f70");
   }
 
-  function checkArray(arr: number[][]) {
-    // Check rows, columns, and diagonals
+  function checkArray(arr: number[][]): boolean {
     for (let i = 0; i < 3; i++) {
       if (
         (arr[i][0] === 1 && arr[i][1] === 1 && arr[i][2] === 1) ||
@@ -96,7 +118,7 @@ function Home() {
     return true;
   }
 
-  function onSquareClick(row: any, col: any) {
+  function onSquareClick(row: number, col: number) {
     if (!gameRunning || tableArray[row][col] !== 0) return;
 
     const newTable = [...tableArray];
@@ -119,9 +141,9 @@ function Home() {
     setColor(turn === 1 ? "#3f7cab" : "#dd8e6f");
 
     if (turn === 1) {
-      player1Sound.play();
+      sounds.player1Sound && sounds.player1Sound.play();
     } else {
-      player2Sound.play();
+      sounds.player2Sound && sounds.player2Sound.play();
     }
   }
 
