@@ -54,7 +54,7 @@ function Home() {
         });
         sounds.winSound && sounds.winSound.play();
       } else {
-        toast.success("The match ended in a draw", {
+        toast.error("The match ended in a draw", {
           position: "bottom-center",
           autoClose: 3000,
         });
@@ -189,6 +189,23 @@ function Home() {
             Reset
           </button>
         </div>
+        {/* <footer className="text-center text-sm text-gray-200 font-mono">
+          <p>
+            <a
+              className="text-[#58b9a1] underline"
+              href="https://portfolio-masum-fullstack.vercel.app"
+            >
+              Portfolio
+            </a>
+            /
+            <a
+              className="text-gray-200 underline"
+              href="https://github.com/developerMasum"
+            >
+              Github
+            </a>
+          </p>
+        </footer> */}
       </div>
     </>
   );
