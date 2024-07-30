@@ -20,22 +20,26 @@ function Home() {
 
   // Load sound effects
   const player1Sound = new Audio("/assets/m1.wav"); // Adjust the path according to your directory structure
-  const player2Sound = new Audio("/assets/m1.wav"); // Use different sounds if needed
-
+  const player2Sound = new Audio("/assets/m2.wav");
+  const winSound = new Audio("/assets/win.mp3");
+  const drawSound = new Audio("/assets/over.mp3");
+  console.log(moves);
   useEffect(() => {
-    if (!gamerunning && moves !== 9) {
-      toast.success(`Player ${winner === 1 ? "X" : "O"} is the winner`, {
-        position: "bottom-center",
-        autoClose: 3000,
-      });
-      setTimeout(() => {
-        Reset();
-      }, 3000);
-    } else if (moves === 9) {
-      toast.success("The match ended in a draw", {
-        position: "bottom-center",
-        autoClose: 3000,
-      });
+    if (!gamerunning) {
+      if (moves !== 9) {
+        toast.success(`Player ${winner === 1 ? "X" : "O"} is the winner`, {
+          position: "bottom-center",
+          autoClose: 3000,
+        });
+        winSound.play();
+      } else if (moves === 9) {
+        toast.success("The match ended in a draw", {
+          position: "bottom-center",
+          autoClose: 3000,
+        });
+        drawSound.play();
+      }
+
       setTimeout(() => {
         Reset();
       }, 3000);
